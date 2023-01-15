@@ -52,11 +52,11 @@
                     </div>
                     <div class="yui3-u Rit searchArea">
                         <div class="search">
-                            <form  th:action="@{/search/list}" class="sui-form form-inline">
+                            <div>
                                 <div class="input-append">
                                     <button class="sui-btn btn-xlarge btn-danger" th:type="submit">搜索</button>
                                 </div>
-                            </form>
+                            <div/>
                         </div>
                     </div>
 
@@ -458,7 +458,7 @@
 </div>
 <!--list-content-->
 <div class="main">
-    <form  th:action="@{/search}" method="post" id="formId" class="sui-form form-inline">
+    <form th:action="@{/search/list}" th:object="${product}" method="post" id="formId" class="sui-form form-inline">
         <div class="py-container">
             <!--bread-->
             <div class="bread">
@@ -544,20 +544,25 @@
                         </li>
                     </ul>
                 </div>
+                <div>
+                    <ul>
+                        <li>商品名 <input th:field="*{name}" th:value="*{name}" /></li>
+                        <li>价格 <input th:field="*{price}" th:value="*{price}" /></li>
+                        <li>数量 <input th:field="*{number}" th:value="*{number}" /></li>
+                    </ul>
+                </div>
                 <div class="fr page">
                     <div class="sui-pagination pagination-large">
+                        <input type="hidden" th:field="*{pageNum}" id="pageNumId" />
                         <ul>
                             <li class="prev disabled">
-                                <!--<a th:field="${page.pageNum}" th:value="${page.upper}" onclick="document.getElementById('formId').submit();">«上一页</a>-->
-                                <a th:href="@{${url}(pageNum=${page.upper})}">«上一页</a>
+                                <a th:value="${page.upper}" th:onclick="'clickPaging(\'' + ${page.upper} + '\');'">«上一页</a>
                             </li>
                             <li th:each="i:${#numbers.sequence(page.lpage,page.rpage)}" th:class="${i}==${page.currentpage}?'active':''">
-                                <!--<a th:field="${page.pageNum}" th:value="${i}" th:text="${i}" onclick="document.getElementById('formId').submit();"></a>-->
-                                <a th:href="@{${url}(pageNum=${i})}" th:text="${i}"></a>
+                                <a th:value="${i}" th:text="${i}" th:onclick="'clickPaging(\'' + ${i} + '\');'"></a>
                             </li>
                             <li class="next">
-                                <!--<a th:field="${page.pageNum}" th:value="${page.next}" th:href="#">下一页»</a>-->
-                                <a th:href="@{${url}(pageNum=${page.next})}">下一页»</a>
+                                <a th:value="${page.next}" th:onclick="'clickPaging(\'' + ${page.next} + '\');'">下一页»</a>
                             </li>
                         </ul>
                         <div>
@@ -567,6 +572,7 @@
                     </div>
                 </div>
             </div>
+
             <!--hotsale-->
             <div class="clearfix hot-sale">
                 <h4 class="title">热卖商品</h4>
@@ -908,7 +914,12 @@
     </div>
 </div>
 
-
+<script>
+    function clickPaging(pageNum){
+        document.getElementById("pageNumId").value = pageNum;
+        document.getElementById('formId').submit();
+    }
+</script>
 <script type="text/javascript" src="./js/all.js"></script>
 </body>
 
