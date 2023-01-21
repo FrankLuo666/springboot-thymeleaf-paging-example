@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>testPageView</title>
+</head>
+<body>
+test downlaod csv. <br>
+<button id="btn">Download CSV</button>
+</body>
+
+<!--import jQuery-->
+<script type="text/javascript" th:src="@{/js/plugins/jquery/jquery.min.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#btn").click(function(){
+            //方法一
+            $.ajax({
+                type: "GET",
+                url: "/downloadCSV",
+                success: function(data) {
+                    var blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+                    if (navigator.msSaveBlob) {
+                        navigator.msSaveBlob(blob, "YourFileName.csv");
+                    } else {
+                        var link = document.createElement("a");
+                        if (link.download !== undefined) {
+                            var url = URL.createObjectURL(blob);
+                            link.setAttribute("href", url);
+                            link.setAttribute("download", "YourFileName.csv");
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }
+                    }
+                }
+            });
+
+            //方法二
+            $.ajax({
+                type: "GET",
+                url: "your_backend_url",
+                success: function(response) {
+                    var fileName = response.fileName;
+                    var csvContent = response.content;
+                    // 使用JavaScript下载文件
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+                    var blob = new Blob([csvContent], {type: "octet/stream"}),
+                        url = window.URL.createObjectURL(blob);
+                    a.href = url;
+                    a.download = fileName;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                }
+            });
+
+        });
+    });
+</script>
+</html>
